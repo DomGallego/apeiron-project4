@@ -11,7 +11,7 @@ st.set_page_config(
 
 
 # Streamlit app title
-st.title("Dr. Jefferey RAG-based chatbot")
+st.title("Project 4 RAG-based Chatbot")
 
 backend_LLM = LLAMA3_70B
 file_filter = None
