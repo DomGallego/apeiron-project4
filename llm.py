@@ -90,8 +90,13 @@ def generate_llm_response(chat_history,
                 ("user", "{input}"),
             ]
         )
+        # history_aware_retriever = create_history_aware_retriever(
+        #     groq_client, vectorStoreRetriever, contextualize_q_prompt
+        # )
+
+        
         history_aware_retriever = create_history_aware_retriever(
-            groq_client, vectorStoreRetriever, contextualize_q_prompt
+            groq_client, qdrant_vector_store.as_retriever(), contextualize_q_prompt
         )
 
         # Answer question
