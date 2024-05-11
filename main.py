@@ -33,17 +33,25 @@ GROQ_API_KEY = "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"
 backend_LLM = st.sidebar.selectbox("LLM", 
                                    options=(LLAMA3_70B, LLAMA3_8B, GEMMA_7B_IT),
                                    on_change=setup_groq_with_backend())
-doc_type = st.sidebar.selectbox("Doc Type", options=("general", "git"))
-external_url_source = st.sidebar.text_input('Enter External Source URL:',
-                                            placeholder='<URL>')
+# doc_type = st.sidebar.selectbox("Doc Type", options=("general", "git"))
+# external_url_source = st.sidebar.text_input('Enter External Source URL:',
+#                                             placeholder='<URL>')
 
+
+# # Streamed response emulator
+# def response_generator(urls, session_messages, doc_type, file_filter):
+#     response = groq_chat_completion(urls, session_messages, doc_type, file_filter)
+#     for word in response.split():
+#         yield word + " "
+#         time.sleep(0.05)
 
 # Streamed response emulator
-def response_generator(urls, session_messages, doc_type, file_filter):
+def response_generator(urls, session_messages):
     response = groq_chat_completion(urls, session_messages, doc_type, file_filter)
     for word in response.split():
         yield word + " "
         time.sleep(0.05)
+
 
 
 # Initialize chat history
@@ -53,18 +61,18 @@ if "messages" not in st.session_state:
 # if not os.environ["GROQ_API_KEY"].startswith('gsk_'):
 #     st.warning('Please enter your Groq API key!', icon='⚠')
 
-if GROQ_API_KEY and GROQ_API_KEY.startswith('gsk_'):
-    if "set_groq" not in st.session_state:
-        st.balloons()
-        st.toast("You are all set to use the chatbot!", icon='✅')
-        setup_groq_with_backend()
-        st.session_state.set_groq = True
+# if GROQ_API_KEY and GROQ_API_KEY.startswith('gsk_'):
+#     if "set_groq" not in st.session_state:
+#         st.balloons()
+#         st.toast("You are all set to use the chatbot!", icon='✅')
+#         setup_groq_with_backend()
+#         st.session_state.set_groq = True
 
-if doc_type == "git":
-    file_filter = st.sidebar.text_input('File filter:',
-                                        placeholder='Enter file type/name to filter the git repo')
-    if not file_filter:
-        st.sidebar.text('Note: Please filter files to speed \nthe context!')
+# if doc_type == "git":
+#     file_filter = st.sidebar.text_input('File filter:',
+#                                         placeholder='Enter file type/name to filter the git repo')
+#     if not file_filter:
+#         st.sidebar.text('Note: Please filter files to speed \nthe context!')
 
 
 # Display chat messages from history on app rerun
@@ -83,8 +91,8 @@ if prompt := st.chat_input("What is up?"):
                                         "content": prompt})
 
         urls = []
-        if external_url_source:
-            urls = external_url_source.split(",")
+        # if external_url_source:
+        #     urls = external_url_source.split(",")
         assistant_message = st.chat_message("assistant")
         with st.spinner("Thinking..."):
             llm_response = response_generator(
