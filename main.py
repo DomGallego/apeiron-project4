@@ -97,7 +97,7 @@ if prompt := st.chat_input("What is up?"):
         with st.spinner("Thinking..."):
             llm_response = response_generator(
                 urls=urls,
-                doc_type=doc_type,
+                # doc_type=doc_type,
                 session_messages=st.session_state.messages,
                 file_filter=file_filter
             )
