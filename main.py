@@ -27,8 +27,9 @@ def setup_groq_with_backend():
 
 # st.sidebar.text("❤️ Built with love by Tharun Suresh")
 
-GROQ_API_KEY = st.sidebar.text_input('Groq API Key',
-                                     type='password')
+# GROQ_API_KEY = st.sidebar.text_input('Groq API Key', type='password')
+GROQ_API_KEY = "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"
+
 backend_LLM = st.sidebar.selectbox("LLM", 
                                    options=(LLAMA3_70B, LLAMA3_8B, GEMMA_7B_IT),
                                    on_change=setup_groq_with_backend())
