@@ -25,7 +25,7 @@ def setup_groq_with_backend():
         setup_groq_client(GROQ_API_KEY, backend_LLM)
 
 
-st.sidebar.text("❤️ Built with love by Tharun Suresh")
+# st.sidebar.text("❤️ Built with love by Tharun Suresh")
 
 GROQ_API_KEY = st.sidebar.text_input('Groq API Key',
                                      type='password')
