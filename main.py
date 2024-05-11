@@ -99,7 +99,7 @@ if prompt := st.chat_input("What is up?"):
                 urls=urls,
                 # doc_type=doc_type,
                 session_messages=st.session_state.messages,
-                file_filter=file_filter
+                # file_filter=file_filter
             )
             response = assistant_message.write_stream(llm_response)
         # Add assistant response to chat history
