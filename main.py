@@ -47,7 +47,7 @@ backend_LLM = st.sidebar.selectbox("LLM",
 
 # Streamed response emulator
 def response_generator(urls, session_messages):
-    response = groq_chat_completion(urls, session_messages, doc_type, file_filter)
+    # response = groq_chat_completion(urls, session_messages)
     for word in response.split():
         yield word + " "
         time.sleep(0.05)
