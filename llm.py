@@ -59,19 +59,15 @@ embeddings = HuggingFaceBgeEmbeddings(
 
 
 db = Qdrant(client=client, embeddings=embeddings, collection_name=collection_name)
-
-
+collection_info = qdrant_client.get_collection(collection_name=collection_name)
+print(list(collection_info))
 
 groq_client = None
-hf_embeddings = None
 LLAMA3_70B = "llama3-70b-8192"
 LLAMA3_8B = "llama3-8b-8192"
 GEMMA_7B_IT = "gemma-7b-it"
 
 DEFAULT_MODEL = LLAMA3_70B
-prev_git_urls = []
-vectorStoreRetriever = None
-
 
 def setup_groq_client(groq_api_key, model_name=DEFAULT_MODEL):
     global groq_client
@@ -80,63 +76,55 @@ def setup_groq_client(groq_api_key, model_name=DEFAULT_MODEL):
                            groq_api_key=groq_api_key)
 
 
-def generate_llm_response(chat_history,
-                          doc=True,
-                          vectorStoreRetriever=None):
+def generate_llm_response(chat_history):
     global groq_client
-    if doc:
-        # Contextualize question
-        contextualize_q_system_prompt = (
-            "Given a chat history and the latest user question "
-            "which might reference context in the chat history, "
-            "formulate a standalone question which can be understood "
-            "without the chat history. Do NOT answer the question, just "
-            "reformulate it if needed and otherwise return it as is."
-        )
-        contextualize_q_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", contextualize_q_system_prompt),
-                MessagesPlaceholder("chat_history"),
-                ("user", "{input}"),
-            ]
-        )
-        # history_aware_retriever = create_history_aware_retriever(
-        #     groq_client, vectorStoreRetriever, contextualize_q_prompt
-        # )
 
-        
-        history_aware_retriever = create_history_aware_retriever(
-            groq_client, db.as_retriever(), contextualize_q_prompt
-        )
+    # Contextualize question
+    contextualize_q_system_prompt = (
+        "Given a chat history and the latest user question "
+        "which might reference context in the chat history, "
+        "formulate a standalone question which can be understood "
+        "without the chat history. Do NOT answer the question, just "
+        "reformulate it if needed and otherwise return it as is."
+    )
+    contextualize_q_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", contextualize_q_system_prompt),
+            MessagesPlaceholder("chat_history"),
+            ("user", "{input}"),
+        ]
+    )
+    
+    history_aware_retriever = create_history_aware_retriever(
+        groq_client, db.as_retriever(), contextualize_q_prompt
+    )
 
-        # Answer question
-        qa_system_prompt = (
-            "You are an assistant for question-answering tasks. Use "
-            "the following pieces of retrieved context/document to answer the "
-            "question. If you don't know the answer, just say that you "
-            "don't know."
-            "{context}"
-        )
-        qa_prompt = ChatPromptTemplate.from_messages(
-            [
-                ("system", qa_system_prompt),
-                MessagesPlaceholder("chat_history"),
-                ("user", "{input}"),
-            ]
-        )
-        # Below we use create_stuff_documents_chain to feed all retrieved context
-        # into the LLM. Note that we can also use StuffDocumentsChain and other
-        # instances of BaseCombineDocumentsChain.
-        question_answer_chain = create_stuff_documents_chain(groq_client,
-                                                             qa_prompt)
-        rag_chain = create_retrieval_chain(
-            history_aware_retriever, question_answer_chain
-        )
-        response = rag_chain.invoke({"input": chat_history[-1]["content"],
-                                     "chat_history": chat_history})
-        return response['answer']
-    else:
-        return groq_client.invoke(chat_history).content
+    # Answer question
+    qa_system_prompt = (
+        "You are an assistant for question-answering tasks. Use "
+        "the following pieces of retrieved context/document to answer the "
+        "question. If you don't know the answer, just say that you "
+        "don't know."
+        "{context}"
+    )
+    qa_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", qa_system_prompt),
+            MessagesPlaceholder("chat_history"),
+            ("user", "{input}"),
+        ]
+    )
+    # Below we use create_stuff_documents_chain to feed all retrieved context
+    # into the LLM. Note that we can also use StuffDocumentsChain and other
+    # instances of BaseCombineDocumentsChain.
+    question_answer_chain = create_stuff_documents_chain(groq_client,
+                                                         qa_prompt)
+    rag_chain = create_retrieval_chain(
+        history_aware_retriever, question_answer_chain
+    )
+    response = rag_chain.invoke({"input": chat_history[-1]["content"],
+                                 "chat_history": chat_history})
+    return response['answer']
 
 
 def groq_chat_completion(urls: List[str],
@@ -146,6 +134,5 @@ def groq_chat_completion(urls: List[str],
     chat_history = session_messages
 
 
-    # response = generate_llm_response(chat_history, False)
-    response = generate_llm_response(chat_history,True)
+    response = generate_llm_response(chat_history)
     return response
