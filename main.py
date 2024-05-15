@@ -25,8 +25,6 @@ def setup_groq_with_backend():
         setup_groq_client(GROQ_API_KEY, backend_LLM)
 
 
-# st.sidebar.text("❤️ Built with love by Tharun Suresh")
-
 # GROQ_API_KEY = st.sidebar.text_input('Groq API Key', type='password')
 GROQ_API_KEY = "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"
 
@@ -37,13 +35,6 @@ backend_LLM = st.sidebar.selectbox("LLM",
 # external_url_source = st.sidebar.text_input('Enter External Source URL:',
 #                                             placeholder='<URL>')
 
-
-# # Streamed response emulator
-# def response_generator(urls, session_messages, doc_type, file_filter):
-#     response = groq_chat_completion(urls, session_messages, doc_type, file_filter)
-#     for word in response.split():
-#         yield word + " "
-#         time.sleep(0.05)
 
 # Streamed response emulator
 def response_generator(urls, session_messages):
@@ -57,23 +48,6 @@ def response_generator(urls, session_messages):
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
-# if not os.environ["GROQ_API_KEY"].startswith('gsk_'):
-#     st.warning('Please enter your Groq API key!', icon='⚠')
-
-# if GROQ_API_KEY and GROQ_API_KEY.startswith('gsk_'):
-#     if "set_groq" not in st.session_state:
-#         st.balloons()
-#         st.toast("You are all set to use the chatbot!", icon='✅')
-#         setup_groq_with_backend()
-#         st.session_state.set_groq = True
-
-# if doc_type == "git":
-#     file_filter = st.sidebar.text_input('File filter:',
-#                                         placeholder='Enter file type/name to filter the git repo')
-#     if not file_filter:
-#         st.sidebar.text('Note: Please filter files to speed \nthe context!')
-
 
 # Display chat messages from history on app rerun
 for message in st.session_state.messages:
