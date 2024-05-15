@@ -1,5 +1,4 @@
 import os
-import json
 import shutil
 from groq import Groq
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -15,9 +14,6 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_groq import ChatGroq
 from langchain import hub
 
-
-
-
 from langchain.vectorstores import Qdrant
 from langchain.chains import RetrievalQA
 from langchain import VectorDBQA, OpenAI
@@ -30,8 +26,6 @@ import re
 from tqdm import tqdm
 import os
 from langchain.embeddings import HuggingFaceBgeEmbeddings
-
-
 
 from typing import List, Dict
 
@@ -61,13 +55,6 @@ embeddings = HuggingFaceBgeEmbeddings(
 
 db = Qdrant(client=client, embeddings=embeddings, collection_name=collection_name)
 
-# for testing the right collection was queried
-qdrant_client = QdrantClient(
-    url=os.getenv("QDRANT_HOST"),
-    api_key=os.getenv("QDRANT_API_KEY"),
-)
-collection_info = qdrant_client.get_collection(collection_name=collection_name)
-print(list(collection_info))
 
 groq_client = None
 LLAMA3_70B = "llama3-70b-8192"
@@ -131,10 +118,8 @@ def generate_llm_response(chat_history):
     )
     response = rag_chain.invoke({"input": chat_history[-1]["content"],
                                  "chat_history": chat_history})
-
-    # Parse the context from the response
-    response_dict = json.loads(response)
-    context_docs = response_dict.get("context", [])
+    # Get the context from the response
+    context_docs = response.get("context", [])
     
     # Format the context with page number and PDF name
     formatted_context = []
@@ -146,7 +131,7 @@ def generate_llm_response(chat_history):
     parsed_context = "\n".join(formatted_context)
     
     # Format the response
-    formatted_response = f"LLM Answer: {response_dict['answer']}\n\nContext:\n{parsed_context}"
+    formatted_response = f"LLM Answer: {response['answer']}\n\nContext:\n{parsed_context}"
     
     return formatted_response
 
