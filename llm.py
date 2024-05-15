@@ -146,6 +146,6 @@ def groq_chat_completion(urls: List[str],
     chat_history = session_messages
 
 
-    response = generate_llm_response(chat_history, False)
-    # response = generate_llm_response(chat_history,True,vectorStoreRetriever)
+    # response = generate_llm_response(chat_history, False)
+    response = generate_llm_response(chat_history,True)
     return response
