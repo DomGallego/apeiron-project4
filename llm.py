@@ -134,18 +134,22 @@ def generate_llm_response(chat_history):
     #     formatted_context.append(f"Page {page_number} of {source_pdf}:\n{doc['page_content']}\n")
 
     for doc in context_docs:
-        logging.debug(f"type(doc): {type(doc)}")
-        logging.debug(f"doc: {doc}")
+        # logging.debug(f"type(doc): {type(doc)}")
+        # logging.debug(f"doc: {doc}")
         page_number = doc.metadata.get("page", "")
         source_pdf = os.path.basename(doc.metadata.get("source", ""))
-        formatted_context.append(f"Page {page_number} of {source_pdf}:\n\n\n{doc.page_content}\n\n\n")
+        formatted_context.append(f"Page {page_number} of {source_pdf}:\n{doc.page_content}\n")
     
-    parsed_context = "\n\n\n".join(formatted_context)
+    parsed_context = "\n".join(formatted_context)
+
+    logging.debug(parsed_context)
     
     # Format the response
-    formatted_response = f"{response['answer']}\n\n\nContext:\n\n\n{parsed_context}"
+    # formatted_response = f"{response['answer']}\nContext:\n{parsed_context}"
+
     
-    return formatted_response
+    return response['answer']
+    # return formatted_response
 
     
     # return f"response: \n{response}\n\n\n chat_history: \n{chat_history}"
