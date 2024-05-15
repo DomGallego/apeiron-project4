@@ -130,7 +130,8 @@ def generate_llm_response(chat_history):
     )
     response = rag_chain.invoke({"input": chat_history[-1]["content"],
                                  "chat_history": chat_history})
-    return response['answer']
+    return f"response: \n{response}\n\n\n chat_history: \n{chat_history}"
+    # return response['answer']
 
 
 def groq_chat_completion(urls: List[str],
