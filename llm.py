@@ -59,6 +59,12 @@ embeddings = HuggingFaceBgeEmbeddings(
 
 
 db = Qdrant(client=client, embeddings=embeddings, collection_name=collection_name)
+
+# for testing the right collection was queried
+qdrant_client = QdrantClient(
+    url=os.getenv("QDRANT_HOST"),
+    api_key=os.getenv("QDRANT_API_KEY"),
+)
 collection_info = qdrant_client.get_collection(collection_name=collection_name)
 print(list(collection_info))
 
