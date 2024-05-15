@@ -1,4 +1,5 @@
 import os
+import json
 import shutil
 from groq import Groq
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -130,7 +131,27 @@ def generate_llm_response(chat_history):
     )
     response = rag_chain.invoke({"input": chat_history[-1]["content"],
                                  "chat_history": chat_history})
-    return f"response: \n{response}\n\n\n chat_history: \n{chat_history}"
+
+    # Parse the context from the response
+    response_dict = json.loads(response)
+    context_docs = response_dict.get("context", [])
+    
+    # Format the context with page number and PDF name
+    formatted_context = []
+    for doc in context_docs:
+        page_number = doc["metadata"].get("page", "")
+        source_pdf = os.path.basename(doc["metadata"].get("source", ""))
+        formatted_context.append(f"Page {page_number} of {source_pdf}:\n{doc['page_content']}\n")
+    
+    parsed_context = "\n".join(formatted_context)
+    
+    # Format the response
+    formatted_response = f"LLM Answer: {response_dict['answer']}\n\nContext:\n{parsed_context}"
+    
+    return formatted_response
+
+    
+    # return f"response: \n{response}\n\n\n chat_history: \n{chat_history}"
     # return response['answer']
 
 
