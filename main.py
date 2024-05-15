@@ -37,12 +37,21 @@ backend_LLM = st.sidebar.selectbox("LLM",
 
 
 # Streamed response emulator
+# def response_generator(urls, session_messages):
+#     response = groq_chat_completion(urls, session_messages)
+#     for word in response.split():
+#         yield word + " "
+#         time.sleep(0.05)
+
+
 def response_generator(urls, session_messages):
     response = groq_chat_completion(urls, session_messages)
-    for word in response.split():
-        yield word + " "
-        time.sleep(0.05)
-
+    
+    for line in response.split("\n"):
+        for word in line.split():
+            yield word + " "
+            time.sleep(0.05)
+        yield "<br>"
 
 
 # Initialize chat history
