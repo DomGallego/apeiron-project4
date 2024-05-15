@@ -98,17 +98,27 @@ def generate_llm_response(chat_history):
 
     # Answer question
     qa_system_prompt = (
-        """You are an assistant for question-answering tasks. Use 
-        the following pieces of retrieved context/document to answer the 
-        question. If you don't know the answer, just say that you 
-        don't know.
-        {context}
+        "You are an assistant for question-answering tasks. Use "
+        "the following pieces of retrieved context/document to answer the "
+        "question. If you don't know the answer, just say that you "
+        "don't know."
+        "{context}"
+    # qa_system_prompt = (
+    #     """You are an assistant for question-answering tasks. Use 
+    #     the following pieces of retrieved context/document to answer the 
+    #     question. If you don't know the answer, just say that you 
+    #     don't know.
+    #     {context}
 
-        If you used the relevant context in answering, display the context after answer.
-        Show the top 3 context, with their page number and the pdf file used as source.
-        """
-        
-    )
+    #     If you used the relevant context in answering, display the context after answer.
+    #     Show the top 3 context, with their page number and the pdf file used as source.
+    #     """       
+    # )
+
+
+
+
+    
     qa_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", qa_system_prompt),
