@@ -29,6 +29,9 @@ from langchain.embeddings import HuggingFaceBgeEmbeddings
 
 from typing import List, Dict
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 
 os.environ['QDRANT_HOST'] = "https://21400720-991d-4ca8-8191-e220f5b545ce.us-east4-0.gcp.cloud.qdrant.io:6333"
 os.environ['QDRANT_API_KEY'] = "BA8RYa_t2LUEWtYmnor7u9EC6GPIalvobOthYX3UJYZMPOhZkfpT4A"
@@ -123,10 +126,19 @@ def generate_llm_response(chat_history):
     
     # Format the context with page number and PDF name
     formatted_context = []
+
+    
+    # for doc in context_docs:
+    #     page_number = doc["metadata"].get("page", "")
+    #     source_pdf = os.path.basename(doc["metadata"].get("source", ""))
+    #     formatted_context.append(f"Page {page_number} of {source_pdf}:\n{doc['page_content']}\n")
+
     for doc in context_docs:
-        page_number = doc["metadata"].get("page", "")
-        source_pdf = os.path.basename(doc["metadata"].get("source", ""))
-        formatted_context.append(f"Page {page_number} of {source_pdf}:\n{doc['page_content']}\n")
+        logging.debug(f"type(doc): {type(doc)}")
+        logging.debug(f"doc: {doc}")
+        page_number = doc.metadata.get("page", "")
+        source_pdf = os.path.basename(doc.metadata.get("source", ""))
+        formatted_context.append(f"Page {page_number} of {source_pdf}:\n{doc.page_content}\n")
     
     parsed_context = "\n".join(formatted_context)
     
