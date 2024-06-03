@@ -33,8 +33,9 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-os.environ['QDRANT_HOST'] = "https://21400720-991d-4ca8-8191-e220f5b545ce.us-east4-0.gcp.cloud.qdrant.io:6333"
-os.environ['QDRANT_API_KEY'] = "BA8RYa_t2LUEWtYmnor7u9EC6GPIalvobOthYX3UJYZMPOhZkfpT4A"
+# pat's creds
+os.environ['QDRANT_HOST'] = "https://66bb0b88-aa0d-4ee4-9211-2847902b087b.us-east4-0.gcp.cloud.qdrant.io:6333"
+os.environ['QDRANT_API_KEY'] = "cY_0dX52Q2th2nPG5PhhTWk-2Zdpdn8pu_A05fG-uNCQWO65Ez0geQ"
 
 
 
