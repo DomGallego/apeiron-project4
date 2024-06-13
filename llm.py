@@ -99,10 +99,14 @@ def generate_llm_response(chat_history):
 
     # Answer question
     qa_system_prompt = (
-        "You are an assistant for question-answering tasks. Use "
+        "You are an expert on the provided context giving assistance via question-answering tasks. Use "
         "the following pieces of retrieved context/document to answer the "
         "question. If you don't know the answer, just say that you "
-        "don't know."
+        "don't know. Do not start your answer with statements "
+        "such as, based from the provided text, or according to the "
+        "text, instead answer with a more natural and humanlike"
+        " approach like how consultants do. Answer briefly and concisely with a thoughtful "
+        "tone and only expound on your answers if asked to do so "
         "{context}"
     )
     # qa_system_prompt = (
