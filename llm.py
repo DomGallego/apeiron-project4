@@ -33,8 +33,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 
-os.environ['QDRANT_HOST'] = "https://21400720-991d-4ca8-8191-e220f5b545ce.us-east4-0.gcp.cloud.qdrant.io:6333"
-os.environ['QDRANT_API_KEY'] = "BA8RYa_t2LUEWtYmnor7u9EC6GPIalvobOthYX3UJYZMPOhZkfpT4A"
+os.environ['QDRANT_HOST'] = "" #removed the api keys
+os.environ['QDRANT_API_KEY'] = ""
 
 
 
